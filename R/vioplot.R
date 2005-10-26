@@ -1,10 +1,14 @@
 library(sm)
-vioplot <- function(x,...,range=1.5,h=NULL,ylim=NULL,names=NULL)
+vioplot <- function(x,...,range=1.5,h=NULL,ylim=NULL,names=NULL, horizontal=FALSE, 
+  col="magenta", border="black", lty=1, lwd=1, rectCol="black", colMed="white", pchMed=19, at, add=FALSE, wex=1, 
+  drawRect=TRUE)
 {
     # process multiple datas
     datas <- list(x,...)
     n <- length(datas)
    
+    if(missing(at)) at <- 1:n
+    
     # pass 1
     #
     # - calculate base range
@@ -63,7 +67,7 @@ vioplot <- function(x,...,range=1.5,h=NULL,ylim=NULL,names=NULL)
         #  we scale maximum estimated point to 0.4 per data
         #
         
-        hscale <- 0.4/max(smout$estimate)
+        hscale <- 0.4/max(smout$estimate) * wex
         
         
         # add density curve x,y pair to lists
@@ -86,64 +90,96 @@ vioplot <- function(x,...,range=1.5,h=NULL,ylim=NULL,names=NULL)
     
     # setup parameters for plot
 
-    xlim <- c(0.5, n+0.5)
+    if(!add){
+      xlim <- if(n==1) 
+               at + c(-.5, .5)
+              else 
+               range(at) + min(diff(at))/2 * c(-1,1)
     
-    if (is.null(ylim)) {
-        ylim <- baserange
+      if (is.null(ylim)) {
+         ylim <- baserange
+      }
     }
-
     if (is.null(names)) {
-        label <- c("",1:n,"")
+        label <- 1:n
     } else {
-        label <- c("",names,"")
+        label <- names
     }
 
-    boxwidth <- 0.05
+    boxwidth <- 0.05 * wex
     
         
     # setup plot
 
-    plot.new()
-    plot.window(xlim = xlim, ylim = ylim)
-   
-    
-    # setup axis
-    
-    axis(1,at = c(0:(n+1)), label=label )
-    axis(2)
-    box()
-
-    
-    # plot data
-    
-    for(i in 1:n) {
+    if(!add)
+      plot.new()
+    if(!horizontal) {
+      if(!add){
+        plot.window(xlim = xlim, ylim = ylim)
+        axis(2)
+        axis(1,at = at, label=label )
+      }  
+      
+      box()
+      
+      for(i in 1:n) {
        
-        # plot left/right density curve
+          # plot left/right density curve
         
-        lines ( i-height[[i]], base[[i]] )
-        lines ( i+height[[i]], base[[i]] )
-
-        # close density curves
-
-        last <- length(height[[i]])
-        lines ( c( i-height[[i]][1] , i+height[[i]][1] ), c( base[[i]][1] , base[[i]][1] ) )
-        lines ( c( i-height[[i]][last] , i+height[[i]][last] ), c( base[[i]][last] , base[[i]][last] ) )
-
+          polygon( c(at[i]-height[[i]], rev(at[i]+height[[i]])), 
+                   c(base[[i]], rev(base[[i]])),
+                   col = col, border=border, lty=lty, lwd=lwd)
         
-        # plot 50% KI box
         
-        rect( i-boxwidth/2, q1[i], i+boxwidth/2, q3[i], col="black")
-
-        # plot IQR
-
-        lines( c( i, i), c(lower[i], upper[i]) )
+          if(drawRect){
+            # plot IQR
+            lines( at[c( i, i)], c(lower[i], upper[i]) ,lwd=lwd, lty=lty)
         
-        # plot median point
+            # plot 50% KI box
         
-        points( i, med[i], pch=19, col="white" )
+            rect( at[i]-boxwidth/2, q1[i], at[i]+boxwidth/2, q3[i], col=rectCol)
+        
+            # plot median point
+        
+            points( at[i], med[i], pch=pchMed, col=colMed )
+         }
+      }
 
     }
+    else {
+      if(!add){
+        plot.window(xlim = ylim, ylim = xlim)
+        axis(1)
+        axis(2,at = at, label=label )
+      }
+      
+      box()
+      for(i in 1:n) {
+       
+          # plot left/right density curve
+        
+          polygon( c(base[[i]], rev(base[[i]])),
+                   c(at[i]-height[[i]], rev(at[i]+height[[i]])),
+                   col = col, border=border, lty=lty, lwd=lwd)
+        
+        
+          if(drawRect){
+            # plot IQR
+            lines( c(lower[i], upper[i]), at[c(i,i)] ,lwd=lwd, lty=lty)
+        
+            # plot 50% KI box
+        
+            rect( q1[i], at[i]-boxwidth/2, q3[i], at[i]+boxwidth/2,  col=rectCol)
+        
+            # plot median point
+            points( med[i], at[i], pch=pchMed, col=colMed )
+          }
+      }
 
+      
+    }
+
+    
     invisible (list( upper=upper, lower=lower, median=med, q1=q1, q3=q3))
 }
 
