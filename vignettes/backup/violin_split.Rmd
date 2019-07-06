@@ -17,7 +17,7 @@ vignette: >
 
 Therefore violin plots are a powerful tool to assist researchers to visualise data, particularly in the quality checking and exploratory parts of an analysis. Violin plots have many benefits:
 
-- Greater flexibility for plotting variation than boxplots
+- Greater flexbility for plotting variation than boxplots
 - More familiarity to boxplot users than density plots
 - Easier to directly compare data types than existing plots
 
@@ -81,7 +81,7 @@ par(mfrow=c(1,1))
 
 ### Split Violin Plots
 
-A more direct comparision can be made with the `side` argument and `add = TRUE` on the second plot:
+A more direct comparison can be made with the `side` argument and `add = TRUE` on the second plot:
 
 ```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last'}
 vioplot(Sepal.Length~Species, data=iris_large, col = "palevioletred", plotCentre = "line", side = "right")
@@ -92,7 +92,7 @@ legend("topleft", fill = c("lightblue", "palevioletred"), legend = c("small", "l
 
 ### median
 
-The line median option is more suitable for side by side comparisions but the point option is still available also:
+The line median option is more suitable for side by side comparisons but the point option is still available also:
 
 
 ```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last'}

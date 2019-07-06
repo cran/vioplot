@@ -6,18 +6,32 @@
 \alias{vioplot.default}
 \title{violin plot}
 \usage{
-\method{vioplot}{formula}(formula, data = NULL, ..., names = NULL,
-  na.action = NULL)
+\method{vioplot}{formula}(formula, data = NULL, ..., xlab = NA,
+  ylab = NA, names = NULL, na.action = NULL)
 
 \method{vioplot}{default}(x, ..., data = NULL, range = 1.5, h = NULL,
   ylim = NULL, names = NULL, horizontal = FALSE, col = "grey50",
   border = "black", lty = 1, lwd = 1, rectCol = "black",
   lineCol = "black", pchMed = 19, colMed = "white",
   colMed2 = "grey 75", at, add = FALSE, wex = 1, drawRect = TRUE,
-  areaEqual = FALSE, main = NA, sub = NA, xlab = NA, ylab = NA,
-  cex = 1, cex.axis = 1, cex.names = NULL, cex.lab = 1,
-  cex.main = 1, cex.sub = 1, yaxt = "s", ylog = FALSE, log = "",
-  logLab = c(1, 2, 5), na.action = NULL, na.rm = T, side = "both",
+  areaEqual = FALSE, axes = TRUE, frame.plot = axes,
+  panel.first = NULL, panel.last = NULL, asp = NA, main = "",
+  sub = "", xlab = NA, ylab = NA, line = NA, outer = FALSE,
+  adj = NA, ann = par("ann"), ask = NA, bg = NA, bty = NA,
+  cex = 1, cex.axis = 1, cex.lab = 1, cex.main = 1,
+  cex.names = NULL, cex.sub = 1, cin = NA, col.axis = NA,
+  col.lab = NA, col.main = NA, col.sub = NA, cra = NA, crt = NA,
+  csi = NA, cxy = NA, din = NA, err = NA, family = NA, fg = NA,
+  fig = NA, fin = NA, font = NA, font.axis = NA, font.lab = NA,
+  font.main = NA, font.sub = NA, lab = NA, las = NA, lend = NA,
+  lheight = NA, ljoin = NA, lmitre = NA, mai = NA, mar = NA,
+  mex = NA, mfcol = NA, mfg = NA, mfrow = NA, mgp = NA,
+  mkh = NA, new = NA, oma = NA, omd = NA, omi = NA, page = NA,
+  pch = NA, pin = NA, plt = NA, ps = NA, pty = NA, smo = NA,
+  srt = NA, tck = NA, tcl = NA, usr = NA, xlog = NA, xaxp = NA,
+  xaxs = "r", xaxt = "s", xpd = NA, yaxp = NA, yaxs = "r",
+  yaxt = "s", ylbias = NA, ylog = FALSE, log = "", logLab = c(1,
+  2, 5), na.action = NULL, na.rm = T, side = "both",
   plotCentre = "point")
 }
 \arguments{
@@ -65,17 +79,19 @@
 
 \item{areaEqual}{logical. Density plots checked for equal area if TRUE. wex must be scalar, relative widths of violins depend on area.}
 
+\item{axes, frame.plot, panel.first, panel.last, asp, line, outer, adj, ann, ask, bg, bty, cin, col.axis, col.lab, col.main, col.sub, cra, crt, csi, cxy, din, err, family, fg, fig, fin, font, font.axis, font.lab, font.main, font.sub, lab, las, lend, lheight, ljoin, lmitre, mai, mar, mex, mfcol, mfg, mfrow, mgp, mkh, new, oma, omd, omi, page, pch, pin, plt, ps, pty, smo, srt, tck, tcl, usr, xlog, xaxp, xaxs, xaxt, xpd, yaxp, yaxs, ylbias}{Arguments to be passed to methods, such as graphical parameters (see \code{\link[graphics]{par}})).}
+
 \item{main, sub, xlab, ylab}{graphical parameters passed to plot.}
 
 \item{cex}{A numerical value giving the amount by which plotting text should be magnified relative to the default.}
 
 \item{cex.axis}{The magnification to be used for y axis annotation relative to the current setting of cex.}
 
-\item{cex.names}{The magnification to be used for x axis annotation relative to the current setting of cex. Takes the value of cex.axis if not given.}
-
 \item{cex.lab}{The magnification to be used for x and y labels relative to the current setting of cex.}
 
 \item{cex.main}{The magnification to be used for main titles relative to the current setting of cex.}
+
+\item{cex.names}{The magnification to be used for x axis annotation relative to the current setting of cex. Takes the value of cex.axis if not given.}
 
 \item{cex.sub}{The magnification to be used for sub-titles relative to the current setting of cex.}
 
@@ -114,6 +130,21 @@ y <- rnorm(100)
 plot(x, y, xlim=c(-5,5), ylim=c(-5,5))
 vioplot(x, col="tomato", horizontal=TRUE, at=-4, add=TRUE,lty=2, rectCol="gray")
 vioplot(y, col="cyan", horizontal=FALSE, at=-4, add=TRUE,lty=2)
+
+# formula input
+data("iris")
+vioplot(Sepal.Length~Species, data = iris, main = "Sepal Length",
+        col=c("lightgreen", "lightblue", "palevioletred"))
+legend("topleft", legend=c("setosa", "versicolor", "virginica"),
+       fill=c("lightgreen", "lightblue", "palevioletred"), cex = 0.5)
+
+data("diamonds", package = "ggplot2")
+palette <- RColorBrewer::brewer.pal(9, "Pastel1")
+par(mfrow=c(3, 1))
+vioplot(price ~ cut, data = diamonds, las = 1, col = palette)
+vioplot(price ~ clarity, data = diamonds, las = 2, col = palette)
+vioplot(price ~ color, data = diamonds, las = 2, col = palette)
+par(mfrow=c(3, 1))
 
 #generate example data
 data_one <- rnorm(100)

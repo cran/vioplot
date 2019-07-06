@@ -17,7 +17,7 @@ While density plots are helpful in this regard, they can be less aesthetically p
 
 Therefore violin plots are a powerful tool to assist researchers to visualise data, particularly in the quality checking and exploratory parts of an analysis. Violin plots have many benefits:
 
-- Greater flexibility for plotting variation than boxplots
+- Greater flexbility for plotting variation than boxplots
 - More familiarity to boxplot users than density plots
 - Easier to directly compare data types than existing plots
 
@@ -41,15 +41,23 @@ vioplot(iris$Sepal.Length[iris$Species=="setosa"], iris$Sepal.Length[iris$Specie
 However the existing violin plot packages (such as \code{\link[vioplot]{vioplot}}) do not support log-scale of the y-axis. This has been amended with the `ylog` argument.
 
 ```{r}
-vioplot(iris$Sepal.Length[iris$Species=="setosa"], iris$Sepal.Length[iris$Species=="versicolor"], iris$Sepal.Length[iris$Species=="virginica"], names=c("setosa", "versicolor", "virginica"), main="Sepal Length", ylog = T, ylim=c(log(1), log(10)))
+vioplot(iris$Sepal.Length[iris$Species=="setosa"], iris$Sepal.Length[iris$Species=="versicolor"], iris$Sepal.Length[iris$Species=="virginica"], names=c("setosa", "versicolor", "virginica"), main="Sepal Length", ylog = T)
 ```
 
 This can also be invoked with the `log="y"` argument compatible with `boxplot`:
 
 ```{r}
-vioplot(iris$Sepal.Length[iris$Species=="setosa"], iris$Sepal.Length[iris$Species=="versicolor"], iris$Sepal.Length[iris$Species=="virginica"], names=c("setosa", "versicolor", "virginica"), main="Sepal Length", log = T, ylim=c(log(1), log(10)))
-vioplot(iris$Sepal.Length[iris$Species=="setosa"], iris$Sepal.Length[iris$Species=="versicolor"], iris$Sepal.Length[iris$Species=="virginica"], names=c("setosa", "versicolor", "virginica"), main="Sepal Length", log = "y", ylim=c(log(1), log(10)))
+vioplot(iris$Sepal.Length[iris$Species=="setosa"], iris$Sepal.Length[iris$Species=="versicolor"], iris$Sepal.Length[iris$Species=="virginica"], names=c("setosa", "versicolor", "virginica"), main="Sepal Length", log = T)
+vioplot(iris$Sepal.Length[iris$Species=="setosa"], iris$Sepal.Length[iris$Species=="versicolor"], iris$Sepal.Length[iris$Species=="virginica"], names=c("setosa", "versicolor", "virginica"), main="Sepal Length", log = "y")
 ```
+
+Log axis can also be passed to horizontal plots:
+
+```{r}
+vioplot(iris$Sepal.Length[iris$Species=="setosa"], iris$Sepal.Length[iris$Species=="versicolor"], iris$Sepal.Length[iris$Species=="virginica"], names=c("setosa", "versicolor", "virginica"), main="Sepal Length", log = "", horizontal = TRUE)
+vioplot(iris$Sepal.Length[iris$Species=="setosa"], iris$Sepal.Length[iris$Species=="versicolor"], iris$Sepal.Length[iris$Species=="virginica"], names=c("setosa", "versicolor", "virginica"), main="Sepal Length", log = "y", horizontal = TRUE)
+```
+
 
 ###custom y-axes
 
@@ -57,7 +65,7 @@ The y-axes can also be removed with `yaxt="n"` to enable customised y-axes:
 
 ```{r}
 vioplot(iris$Sepal.Length[iris$Species=="setosa"], iris$Sepal.Length[iris$Species=="versicolor"], iris$Sepal.Length[iris$Species=="virginica"], names=c("setosa", "versicolor", "virginica"), main="Sepal Length", yaxt="n")
-vioplot(iris$Sepal.Length[iris$Species=="setosa"], iris$Sepal.Length[iris$Species=="versicolor"], iris$Sepal.Length[iris$Species=="virginica"], names=c("setosa", "versicolor", "virginica"), main="Sepal Length", ylog = T, yaxt="n", ylim=c(log(1), log(10)))
+vioplot(iris$Sepal.Length[iris$Species=="setosa"], iris$Sepal.Length[iris$Species=="versicolor"], iris$Sepal.Length[iris$Species=="virginica"], names=c("setosa", "versicolor", "virginica"), main="Sepal Length", ylog = T, yaxt="n")
 ```
 
 Thus custom axes can be added to violin plots. As shown on a linear scale:
