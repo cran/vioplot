@@ -6,54 +6,73 @@
 \alias{vioplot.default}
 \title{violin plot}
 \usage{
-\method{vioplot}{formula}(formula, data = NULL, ..., xlab = NA,
-  ylab = NA, names = NULL, na.action = NULL)
+\method{vioplot}{formula}(formula, data = NULL, ..., subset,
+  na.action = NULL, add = FALSE, ann = !add, horizontal = FALSE,
+  xlab = mklab(y_var = horizontal), ylab = mklab(y_var = !horizontal),
+  names = NULL, drop = FALSE, sep = ".", lex.order = FALSE)
 
 \method{vioplot}{default}(x, ..., data = NULL, range = 1.5, h = NULL,
   ylim = NULL, names = NULL, horizontal = FALSE, col = "grey50",
-  border = "black", lty = 1, lwd = 1, rectCol = "black",
-  lineCol = "black", pchMed = 19, colMed = "white",
+  border = par()$fg, lty = 1, lwd = 1, rectCol = par()$fg,
+  lineCol = par()$fg, pchMed = 19, colMed = "white",
   colMed2 = "grey 75", at, add = FALSE, wex = 1, drawRect = TRUE,
   areaEqual = FALSE, axes = TRUE, frame.plot = axes,
   panel.first = NULL, panel.last = NULL, asp = NA, main = "",
   sub = "", xlab = NA, ylab = NA, line = NA, outer = FALSE,
-  adj = NA, ann = par("ann"), ask = NA, bg = NA, bty = NA,
-  cex = 1, cex.axis = 1, cex.lab = 1, cex.main = 1,
-  cex.names = NULL, cex.sub = 1, cin = NA, col.axis = NA,
-  col.lab = NA, col.main = NA, col.sub = NA, cra = NA, crt = NA,
-  csi = NA, cxy = NA, din = NA, err = NA, family = NA, fg = NA,
-  fig = NA, fin = NA, font = NA, font.axis = NA, font.lab = NA,
-  font.main = NA, font.sub = NA, lab = NA, las = NA, lend = NA,
-  lheight = NA, ljoin = NA, lmitre = NA, mai = NA, mar = NA,
-  mex = NA, mfcol = NA, mfg = NA, mfrow = NA, mgp = NA,
-  mkh = NA, new = NA, oma = NA, omd = NA, omi = NA, page = NA,
-  pch = NA, pin = NA, plt = NA, ps = NA, pty = NA, smo = NA,
-  srt = NA, tck = NA, tcl = NA, usr = NA, xlog = NA, xaxp = NA,
-  xaxs = "r", xaxt = "s", xpd = NA, yaxp = NA, yaxs = "r",
-  yaxt = "s", ylbias = NA, ylog = FALSE, log = "", logLab = c(1,
-  2, 5), na.action = NULL, na.rm = T, side = "both",
-  plotCentre = "point")
+  adj = par()$adj, ann = par()$ann, ask = par()$ask, bg = par()$bg,
+  bty = par()$bty, cex = par()$cex, cex.axis = par()$cex.axis,
+  cex.lab = par()$cex.lab, cex.main = par()$cex.main,
+  cex.names = par()$cex.axis, cex.sub = par()$cex.sub,
+  cin = par()$cin, col.axis = par()$col.axis,
+  col.lab = par()$col.lab, col.main = par()$col.main,
+  col.sub = par()$col.sub, cra = par()$cra, crt = par()$crt,
+  csi = par()$csi, cxy = par()$cxy, din = par()$din,
+  err = par()$err, family = par()$family, fg = par()$fg,
+  fig = par()$fig, fin = par()$fin, font = par()$font,
+  font.axis = par()$font.axis, font.lab = par()$font.lab,
+  font.main = par()$font.main, font.sub = par()$font.sub,
+  lab = par()$lab, las = par()$las, lend = par()$lend,
+  lheight = par()$lheight, ljoin = par()$ljoin,
+  lmitre = par()$lmitre, mai = par()$mai, mar = par()$mar,
+  mex = par()$mex, mfcol = par()$mfcol, mfg = par()$mfg,
+  mfrow = par()$mfrow, mgp = par()$pmg, mkh = par()$mkh,
+  new = par()$new, oma = par()$oma, omd = par()$omd,
+  omi = par()$omi, page = par()$page, pch = par()$pch,
+  pin = par()$pin, plt = par()$plt, ps = par()$ps, pty = par()$pty,
+  smo = par()$smo, srt = par()$srt, tck = par()$tck,
+  tcl = par()$tcl, usr = par()$usr, xlog = par()$xlog,
+  xaxp = par()$xaxp, xaxs = par()$xaxs, xaxt = par()$xaxt,
+  xpd = par()$xpd, ylog = par()$ylog, yaxp = par()$yaxp,
+  yaxs = par()$yaxs, yaxt = par()$yaxt, ylbias = par()$ylbias,
+  log = "", logLab = c(1, 2, 5), na.action = NULL, na.rm = T,
+  side = "both", plotCentre = "point")
 }
 \arguments{
 \item{x}{for specifying data from which the boxplots are to be produced. Either a numeric vector, or a single list containing such vectors. Additional unnamed arguments specify further data as separate vectors (each corresponding to a component boxplot). NAs are allowed in the data.}
 
-\item{...}{additional data vectors or formula parameters.}
+\item{...}{additional data vectors or formula parameters. For the formula method, named arguments to be passed to the default method.}
 
 \item{formula}{a formula, such as y ~ grp, where y is a numeric vector of data values to be split into groups according to the grouping variable grp (usually a factor).}
 
 \item{data}{a data.frame (or list) from which the variables in formula should be taken.}
 
-\item{names}{one label, or a vector of labels for the data must match the number of data given}
+\item{subset}{an optional vector specifying a subset of observations to be used for plotting.}
 
 \item{na.action}{a function which indicates what should happen when the data contain NAs. The default is to ignore missing values in either the response or the group.}
+
+\item{add}{logical. if FALSE (default) a new plot is created}
+
+\item{horizontal}{logical. horizontal or vertical violins}
+
+\item{names}{one label, or a vector of labels for the data must match the number of data given}
+
+\item{drop, sep, lex.order}{defines groups to plot from formula, passed to  \code{\link[base]{split.default}}, see there.}
 
 \item{range}{a factor to calculate the upper/lower adjacent values}
 
 \item{h}{the height for the density estimator, if omit as explained in sm.density, h will be set to an optimum}
 
 \item{ylim}{y limits}
-
-\item{horizontal}{logical. horizontal or vertical violins}
 
 \item{col}{Graphical parameter for fill colour of the violin(s) polygon. NA for no fill colour. If col is a vector, it specifies the colour per violin, and colours are reused if necessary.}
 
@@ -70,8 +89,6 @@
 \item{colMed, colMed2}{Graphical parameters to control colour of the median point. If colMed is a vector, it specifies the colour per violin. colMed specifies the fill colour in all cases unless pchMed is 21:25 in which case colMed is the border colour and colMed2 is the fill colour.}
 
 \item{at}{position of each violin. Default to 1:n}
-
-\item{add}{logical. if FALSE (default) a new plot is created}
 
 \item{wex}{relative expansion of the violin.  If wex is a vector, it specifies the area/width size per violin and sizes are reused if necessary.}
 
@@ -95,9 +112,9 @@
 
 \item{cex.sub}{The magnification to be used for sub-titles relative to the current setting of cex.}
 
-\item{yaxt}{A character which specifies the y axis type. Specifying "n" suppresses plotting.}
-
 \item{ylog}{A logical value (see log in \code{\link[graphics]{plot.default}}). If TRUE, a logarithmic scale is in use (e.g., after plot(*, log = "y")). For a new device, it defaults to FALSE, i.e., linear scale.}
+
+\item{yaxt}{A character which specifies the y axis type. Specifying "n" suppresses plotting.}
 
 \item{log}{Logarithmic scale if log = "y" or TRUE. Invokes ylog = TRUE.}
 
