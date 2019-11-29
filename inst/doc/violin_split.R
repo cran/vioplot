@@ -1,7 +1,7 @@
 ## ---- fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last'----
 library("vioplot")
 
-## ---- message=FALSE------------------------------------------------------
+## ---- message=FALSE-----------------------------------------------------------
 data(iris)
 summary(iris$Sepal.Width)
 table(iris$Sepal.Width > mean(iris$Sepal.Width))
