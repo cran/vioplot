@@ -1,19 +1,22 @@
-#' violin plot
+#' Violin Plot
 #'
 #' Produce violin plot(s) of the given (grouped) values with enhanced annotation and colour per group. Includes customisation of colours for each aspect of the violin, boxplot, and separate violins. This supports input of data as a list or formula, being backwards compatible with \code{\link[vioplot]{vioplot}} (0.2) and taking input in a formula as used for \code{\link[graphics]{boxplot}}.
 #'
+#' @name vioplot
+#' @aliases violinplot
 #' @param x for specifying data from which the boxplots are to be produced. Either a numeric vector, or a single list containing such vectors. Additional unnamed arguments specify further data as separate vectors (each corresponding to a component boxplot). NAs are allowed in the data.
 #' @param ... additional data vectors or formula parameters. For the formula method, named arguments to be passed to the default method.
 #' @param formula a formula, such as y ~ grp, where y is a numeric vector of data values to be split into groups according to the grouping variable grp (usually a factor).
 #' @param data a data.frame (or list) from which the variables in formula should be taken.
+#' @param use.cols logical indicating if columns (by default) or rows (use.cols = FALSE) should be plotted.
 #' @param subset	an optional vector specifying a subset of observations to be used for plotting.
-#' @param drop,sep,lex.order defines groups to plot from formula, passed to  \code{\link[base]{split.default}}, see there.
+#' @param drop,sep,lex.order defines groups to plot from formula, passed to \code{split.default}, see there.
 #' @param range a factor to calculate the upper/lower adjacent values
 #' @param h the height for the density estimator, if omit as explained in sm.density, h will be set to an optimum
-#' @param ylim y limits
+#' @param xlim,ylim	 numeric vectors of length 2, giving the x and y coordinates ranges.
 #' @param yaxt A character which specifies the y axis type. Specifying "n" suppresses plotting.
-#' @param ylog A logical value (see log in \code{\link[graphics]{plot.default}}). If TRUE, a logarithmic scale is in use (e.g., after plot(*, log = "y")). For a new device, it defaults to FALSE, i.e., linear scale.
-#' @param log  Logarithmic scale if log = "y" or TRUE. Invokes ylog = TRUE.
+#' @param ylog,xlog A logical value (see log in \code{\link[graphics]{plot.default}}). If ylog is TRUE, a logarithmic scale is in use (e.g., after plot(*, log = "y")). For horizontal = TRUE then, if xlog is TRUE, a logarithmic scale is in use (e.g., after plot(*, log = "x")). For a new device, it defaults to FALSE, i.e., linear scale.
+#' @param log  Logarithmic scale if log = "y" or TRUE. Invokes ylog = TRUE. If horizontal is TRUE then invokes xlog = TRUE.
 #' @param logLab Increments for labelling y-axis on log-scale, defaults to numbers starting with 1, 2, 5, and 10.
 #' @param names one label, or a vector of labels for the data must match the number of data given
 #' @param col Graphical parameter for fill colour of the violin(s) polygon. NA for no fill colour. If col is a vector, it specifies the colour per violin, and colours are reused if necessary.
@@ -28,7 +31,7 @@
 #' @param at position of each violin. Default to 1:n
 #' @param add logical. if FALSE (default) a new plot is created
 #' @param wex relative expansion of the violin.  If wex is a vector, it specifies the area/width size per violin and sizes are reused if necessary.
-#' @param horizontal logical. horizontal or vertical violins
+#' @param horizontal logical. To use horizontal or vertical violins. Note that log scale can only be used on the x-axis for horizontal violins, and on the y-axis otherwise.
 #' @param main,sub,xlab,ylab graphical parameters passed to plot.
 #' @param cex A numerical value giving the amount by which plotting text should be magnified relative to the default.
 #' @param cex.axis The magnification to be used for y axis annotation relative to the current setting of cex.
@@ -40,7 +43,7 @@
 #' @param na.rm logical value indicating whether NA values should be stripped before the computation proceeds. Defaults to TRUE.
 #' @param side defaults to "both". Assigning "left" or "right" enables one sided plotting of violins. May be applied as a scalar across all groups.
 #' @param plotCentre defaults to "points", plotting a central point at the median. If "line" is given a median line is plotted (subject to side) alternatively.
-#' @param axes,frame.plot,panel.first,panel.last,asp,line,outer,adj,ann,ask,bg,bty,cin,col.axis,col.lab,col.main,col.sub,cra,crt,csi,cxy,din,err,family,fg,fig,fin,font,font.axis,font.lab,font.main,font.sub,lab,las,lend,lheight,ljoin,lmitre,mai,mar,mex,mfcol,mfg,mfrow,mgp,mkh,new,oma,omd,omi,page,pch,pin,plt,ps,pty,smo,srt,tck,tcl,usr,xlog,xaxp,xaxs,xaxt,xpd,yaxp,yaxs,ylbias Arguments to be passed to methods, such as graphical parameters (see \code{\link[graphics]{par}})).
+#' @param axes,frame.plot,panel.first,panel.last,asp,line,outer,adj,ann,ask,bg,bty,cin,col.axis,col.lab,col.main,col.sub,cra,crt,csi,cxy,din,err,family,fg,fig,fin,font,font.axis,font.lab,font.main,font.sub,lab,las,lend,lheight,ljoin,lmitre,mai,mar,mex,mfcol,mfg,mfrow,mgp,mkh,new,oma,omd,omi,page,pch,pin,plt,ps,pty,smo,srt,tck,tcl,usr,xaxp,xaxs,xaxt,xpd,yaxp,yaxs,ylbias Arguments to be passed to methods, such as graphical parameters (see \code{\link[graphics]{par}})).
 #' @keywords plot graphics violin
 #' @import sm
 #' @importFrom zoo rollmean
@@ -143,40 +146,98 @@ vioplot <- function(x, ...) {
   UseMethod("vioplot")
 }
 
+#' Draw a Violin plot for each Column (Row) of a Matrix
+#'
+#' Interpreting the columns (or rows) of a matrix as different groups, draw a boxplot for each.
+#'
+#' @aliases violin.matrix violinplot.matrix
+#' @param x	a numeric matrix.
+#' @param use.cols logical indicating if columns (by default) or rows (use.cols = FALSE) should be plotted.
+#' @param ...	Further arguments to \code{\link[vioplot]{vioplot}}.
+#' @rdname vioplot
+#' @export
+vioplot.matrix <- function (x, use.cols = TRUE, ...)
+{
+  groups <- if (use.cols) {
+    split(c(x), rep.int(1L:ncol(x), rep.int(nrow(x), ncol(x))))
+  }
+  else split(c(x), seq(nrow(x)))
+  if (length(nam <- dimnames(x)[[1 + use.cols]]))
+    names(groups) <- nam
+  invisible(vioplot(groups, ...))
+}
+
+#' @rdname vioplot
+#' @export
+vioplot.list <- function (x, ...){
+  ind <- sapply(x, is.numeric)
+  if(all(!ind)){
+    stop(paste("elements are not numeric: ", names(x)[!sapply(x, is.numeric)]))
+  }
+  if(any(!ind)){
+    warning(paste("some elements are not numeric: ", names(x)[!sapply(x, is.numeric)]))
+    x <- x[sapply(x, is.numeric)]
+  }
+  invisible(vioplot.default(x, ...))
+}
+#' @rdname vioplot
+#' @export
+vioplot.data.frame <- vioplot.list
+
+#' @rdname vioplot
+#' @export
+vioplot.matrix <- vioplot.matrix
+
 #' @rdname vioplot
 #' @export
 vioplot.formula <-
   function (formula, data = NULL, ..., subset,  na.action = NULL,
-            add = FALSE, ann = !add, horizontal = FALSE,
+            add = FALSE, ann = !add, horizontal = FALSE, side = "both",
             xlab = mklab(y_var = horizontal), ylab = mklab(y_var = !horizontal), names=NULL,
             drop = FALSE, sep = ".", lex.order = FALSE)
   {
-    if (missing(formula) || (length(formula) != 3L))
+    if (missing(formula) || (length(formula) != 3L)){
       stop("'formula' missing or incorrect")
-    if (missing(xlab) || missing(ylab))
-      mklab <- function(y_var) if (y_var)
-        names(mf)[response]
-    else paste(names(mf)[-response], collapse = " : ")
+    }
+    if(add && side != "both"){
+      if(!is.null(names)) warning("Warning: names can only be changed on first call of vioplot (when add = FALSE)
+")
+      if(!missing(xlab)) warning("Warning: x-axis labels can only be changed on first call of vioplot (when add = FALSE)
+")
+      if(!missing(ylab)) warning("Warning: y-axis labels can only be changed on first call of vioplot (when add = FALSE)
+")
+    }
+    if (missing(xlab) || missing(ylab)){
+      mklab <- function(y_var){
+        if(y_var){
+          names(mf)[response]
+        } else {
+          paste(names(mf)[-response], collapse = " : ")
+        }
+      }
+    }
     m <- match.call(expand.dots = FALSE)
     if (is.matrix(eval(m$data, parent.frame())))
       m$data <- as.data.frame(data)
     m$... <- m$drop <- m$sep <- m$lex.order <- NULL
     m$xlab <- m$ylab <- m$add <- m$ann <- m$horizontal <- NULL
-    m$names <- NULL
+    m$names <-  m$side <- NULL
     m$na.action <- na.action
     m[[1L]] <- quote(stats::model.frame.default)
     mf <- eval(m, parent.frame())
     response <- attr(attr(mf, "terms"), "response")
+    if(add){
+      xlab <- ylab <- NA
+    }
     vioplot(split(mf[[response]], mf[-response], drop = drop,
-            sep = sep, lex.order = lex.order), xlab = xlab, ylab = ylab, names = names,
-            add = add, ann = ann, horizontal = horizontal, ...)
+                  sep = sep, lex.order = lex.order), xlab = xlab, ylab = ylab, names = names,
+            add = add, ann = ann, horizontal = horizontal, side = side, ...)
   }
-
 
 #' @rdname vioplot
 #' @export
 vioplot.default <-
-  function (x, ..., data = NULL, range = 1.5, h = NULL, ylim = NULL, names = NULL,
+  function (x, ..., data = NULL, range = 1.5, h = NULL, xlim = NULL, ylim = NULL, names = NULL,
             horizontal = FALSE, col = "grey50", border = par()$fg, lty = 1,
             lwd = 1, rectCol = par()$fg, lineCol = par()$fg, pchMed = 19, colMed = "white", colMed2 = "grey 75",
             at, add = FALSE, wex = 1, drawRect = TRUE, areaEqual=FALSE,
@@ -198,15 +259,28 @@ vioplot.default <-
     for(ii in 1:length(names(par()))){
       if(is.na(get(names(par())[ii])[1])) assign(names(par()[ii]), unlist(par()[[ii]]))
     }
+    if(add && side != "both"){
+      if(!is.null(names)) warning("Warning: names can only be changed on first call of vioplot (when add = FALSE)
+")
+      if(!is.na(xlab)) warning("Warning: x-axis labels can only be changed on first call of vioplot (when add = FALSE)
+")
+      if(!is.na(ylab)) warning("vy-axis labels can only be changed on first call of vioplot (when add = FALSE)
+")
+      if(!missing(main)) warning("Warning: main title can only be changed on first call of vioplot (when add = FALSE)
+")
+      if(!missing(sub)) warning("Warning: subtitle can only be changed on first call of vioplot (when add = FALSE)
+ ")
+    }
     if(!is.list(x)){
       datas <- list(x, ...)
     } else{
-      datas<-lapply(x, unlist)
+      datas <- lapply(x, unlist)
       if(is.null(names)){
         names <- names(datas)
       }
     }
     if(is.character(log)) if("y" %in% unlist(strsplit(log, ""))) log <- TRUE
+    if(is.na(xlog) | (horizontal == TRUE & (log == FALSE | log == ""))) xlog <- FALSE
     log <- ifelse(log == TRUE, "y", "")
     if(log == 'x' | log == 'xy' | xlog == TRUE){
       if(horizontal | log == "xy"){
@@ -220,6 +294,8 @@ vioplot.default <-
     if(log == TRUE | ylog == TRUE){
       ylog <- TRUE
       log <- "y"
+    } else {
+      log <- ""
     }
     if(ylog){
       #check data is compatible with log scale
@@ -318,9 +394,20 @@ vioplot.default <-
       }
     }
     if (!add) {
-      xlim <- if (n == 1)
-        at + c(-0.5, 0.5)
-      else range(at) + min(diff(at))/2 * c(-1, 1)
+      if (is.null(xlim)) {
+        xlim <- if (n == 1){
+          at + c(-0.5, 0.5)
+        } else {
+          range(at) + min(diff(at))/2 * c(-1, 1)
+        }
+      } else {
+        xlim.default <- if (n == 1){
+          at + c(-0.5, 0.5)
+        } else {
+          range(at) + min(diff(at))/2 * c(-1, 1)
+        }
+        print(paste0("Using c(", xlim[1],",", xlim[2], ") as input for xlim, note that default values for these dimensions are c(", xlim.default[1],",", xlim.default[2], ")"))
+      }
       if (is.null(ylim)) {
         ylim <- baserange
       }
@@ -339,7 +426,7 @@ vioplot.default <-
       } else {
         plot.window(ylim, xlim, log = ifelse(log == "y", "x", ""), asp = asp, bty = bty, cex = cex, xaxs = xaxs, yaxs = yaxs, lab = lab, mai = mai, mar = mar, mex = mex, mfcol = mfcol, mfrow = mfrow, mfg = mfg, xlog = ylog, ylog = xlog)
       }
-          }
+    }
     panel.first
     if (!horizontal) {
       if (!add) {
@@ -354,33 +441,37 @@ vioplot.default <-
             #log_axis <- log_axis[log_axis <= exp(par("usr")[4])]
             Axis(unlist(datas), side = 2, cex.axis = cex.axis, col.axis = col.axis, font.axis = font.axis, mgp = mgp, tck = tck, tcl = tcl, las = las) # xaxp = xaxp, yaxp = yaxp disabled for log
             if(is.null(cex.names)) cex.names <- cex.axis
-            Axis(1:length(datas), at = at, labels = label, side = 1, cex.axis = cex.names, col.axis = col.axis, font.axis = font.axis, mgp = mgp, tck = tck, tcl = tcl, las = las) # xaxp = xaxp, yaxp = yaxp disabled for log
+            if(xaxt !="n"){
+              Axis(1:length(datas), at = at, labels = label, side = 1, cex.axis = cex.names, col.axis = col.axis, font.axis = font.axis, mgp = mgp, tck = tck, tcl = tcl, las = las) # xaxp = xaxp, yaxp = yaxp disabled for log
+            }
           } else {
             Axis(unlist(datas), side = 2, cex.axis = cex.axis, col.axis = col.axis, font.axis = font.axis, mgp = mgp, yaxp = yaxp, tck = tck, tcl = tcl, las = las)
             if(is.null(cex.names)) cex.names <- cex.axis
-            Axis(1:length(datas), at = at, labels = label, side = 1, cex.axis = cex.names, col.axis = col.axis, font.axis = font.axis, mgp = mgp, xaxp = xaxp, tck = tck, tcl = tcl, las = las)
+            if(xaxt !="n"){
+              Axis(1:length(datas), at = at, labels = label, side = 1, cex.axis = cex.names, col.axis = col.axis, font.axis = font.axis, mgp = mgp, xaxp = xaxp, tck = tck, tcl = tcl, las = las)
+            }
           }
         }
       }
       if (frame.plot) {
-       box(lty = lty, lwd = lwd)
+        box(lty = lty, lwd = lwd)
       }
       for (i in 1:n) {
         polygon(c(at[i] - radj*height[[i]], rev(at[i] + ladj*height[[i]])),
-                c(base[[i]], rev(base[[i]])), col = ifelse(length(col)>1, col[i], col), border = ifelse(length(border)>1, border[i], border),
+                c(base[[i]], rev(base[[i]])), col = ifelse(length(col)>1,col[1+(i-1)%%length(col)], col), border = ifelse(length(border)>1, border[1+(i-1)%%length(border)], border),
                 lty = lty, lwd = lwd, xpd = xpd, lend = lend, ljoin = ljoin, lmitre = lmitre)
         if (drawRect) {
           lines(at[c(i, i)], c(lower[i], upper[i]), lwd = lwd,
-                lty = lty, col = ifelse(length(lineCol)>1, lineCol[i], lineCol), lend = lend, ljoin = ljoin, lmitre = lmitre)
+                lty = lty, col = ifelse(length(lineCol)>1, lineCol[1+(i-1)%%length(lineCol)], lineCol), lend = lend, ljoin = ljoin, lmitre = lmitre)
           rect(at[i] - radj*ifelse(length(boxwidth)>1, boxwidth[i], boxwidth)/2, q1[i], at[i] + ladj*ifelse(length(boxwidth)>1, boxwidth[i], boxwidth)/2,
-               q3[i], col = ifelse(length(rectCol)>1, rectCol[i], rectCol), border = ifelse(length(lineCol)>1, lineCol[i], lineCol), xpd = xpd, lend = lend, ljoin = ljoin, lmitre = lmitre)
+               q3[i], col = ifelse(length(rectCol)>1, rectCol[1+(i-1)%%length(rectCol)], rectCol), border = ifelse(length(lineCol)>1, lineCol[1+(i-1)%%length(lineCol)], lineCol), xpd = xpd, lend = lend, ljoin = ljoin, lmitre = lmitre)
           if(plotCentre == "line"){
             lines(x = c(at[i] - radj*med.dens[i],
                         at[i],
                         at[i] + ladj*med.dens[i]),
                   y = rep(med[i],3))
           } else {
-            points(at[i], med[i], pch = ifelse(length(pchMed)>1, pchMed[i], pchMed), col = ifelse(length(colMed)>1, colMed[i], colMed), bg = ifelse(length(colMed2)>1, colMed2[i], colMed2), cex = cex, lwd = lwd, lty = lty)
+            points(at[i], med[i], pch = ifelse(length(pchMed)>1, pchMed[1+(i-1)%%length(pchMed)], pchMed), col = ifelse(length(colMed)>1, colMed[1+(i-1)%%length(colMed)], colMed), bg = ifelse(length(colMed2)>1, colMed2[1+(i-1)%%length(colMed2)], colMed2), cex = cex, lwd = lwd, lty = lty)
           }
         }
       }
@@ -403,11 +494,15 @@ vioplot.default <-
             #log_axis <- log_axis[log_axis <= exp(par("usr")[4])]
             Axis(unlist(datas), side = 1, cex.axis = cex.names, col.axis = col.axis, font.axis = font.axis, mgp = mgp, tck = tck, tcl = tcl, las = las) # xaxp = xaxp, yaxp = yaxp disabled for log
             if(is.null(cex.names)) cex.names <- cex.axis
-            Axis(1:length(datas), at = at, labels = label, side = 2, cex.axis = cex.axis, col.axis = col.axis, font.axis = font.axis, mgp = mgp, tck = tck, tcl = tcl, las = las) # xaxp = xaxp, yaxp = yaxp disabled for log
+            if(xaxt !="n"){
+              Axis(1:length(datas), at = at, labels = label, side = 2, cex.axis = cex.axis, col.axis = col.axis, font.axis = font.axis, mgp = mgp, tck = tck, tcl = tcl, las = las) # xaxp = xaxp, yaxp = yaxp disabled for log
+            }
           } else {
             Axis(unlist(datas), side = 1, cex.axis = cex.names, col.axis = col.axis, font.axis = font.axis, mgp = mgp, xaxp = xaxp, tck = tck, tcl = tcl, las = las)
             if(is.null(cex.names)) cex.names <- cex.axis
-            Axis(1:length(datas), at = at, labels = label, side = 2, cex.axis = cex.axis, col.axis = col.axis, font.axis = font.axis, mgp = mgp, yaxp = yaxp, tck = tck, tcl = tcl, las = las)
+            if(xaxt !="n"){
+              Axis(1:length(datas), at = at, labels = label, side = 2, cex.axis = cex.axis, col.axis = col.axis, font.axis = font.axis, mgp = mgp, yaxp = yaxp, tck = tck, tcl = tcl, las = las)
+            }
           }
         }
       }
@@ -416,29 +511,28 @@ vioplot.default <-
       }
       for (i in 1:n) {
         polygon(c(base[[i]], rev(base[[i]])), c(at[i] - radj*height[[i]],
-                                                rev(at[i] + ladj*height[[i]])), col = ifelse(length(col)>1, col[i], col), border = ifelse(length(border)>1, border[i], border),
+                                                rev(at[i] + ladj*height[[i]])), col = ifelse(length(col)>1,col[1+(i-1)%%length(col)], col), border = ifelse(length(border)>1, border[1+(i-1)%%length(border)], border),
                 lty = lty, lwd = lwd, xpd = xpd, lend = lend, ljoin = ljoin, lmitre = lmitre)
         if (drawRect) {
           lines(c(lower[i], upper[i]), at[c(i, i)], lwd = lwd,
-                lty = lty, col = ifelse(length(lineCol)>1, lineCol[i], lineCol), lend = lend, ljoin = ljoin, lmitre = lmitre)
+                lty = lty, col = ifelse(length(lineCol)>1, lineCol[1+(i-1)%%length(lineCol)], lineCol), lend = lend, ljoin = ljoin, lmitre = lmitre)
           rect(q1[i], at[i] - radj*ifelse(length(boxwidth)>1, boxwidth[i], boxwidth)/2, q3[i], at[i] +
-                 ladj*ifelse(length(boxwidth)>1, boxwidth[i], boxwidth)/2, col = ifelse(length(rectCol)>1, rectCol[i], rectCol), border = ifelse(length(lineCol)>1, lineCol[i], lineCol), xpd = xpd, lend = lend, ljoin = ljoin, lmitre = lmitre)
+                 ladj*ifelse(length(boxwidth)>1, boxwidth[i], boxwidth)/2, col = ifelse(length(rectCol)>1, rectCol[1+(i-1)%%length(rectCol)], rectCol), border = ifelse(length(lineCol)>1, lineCol[1+(i-1)%%length(lineCol)], lineCol), xpd = xpd, lend = lend, ljoin = ljoin, lmitre = lmitre)
           if(plotCentre == "line"){
             lines(y = c(at[i] - radj*med.dens[i],
                         at[i],
                         at[i] + ladj*med.dens[i]),
                   x = rep(med[i],3))
           } else {
-            points(med[i], at[i], pch = ifelse(length(pchMed)>1, pchMed[i], pchMed), col = ifelse(length(colMed)>1, colMed[i], colMed), , bg = ifelse(length(colMed2)>1, colMed2[i], colMed2), cex = cex, lwd = lwd, lty = lty)
+            points(med[i], at[i], pch = ifelse(length(pchMed)>1, pchMed[1+(i-1)%%length(pchMed)], pchMed), col = ifelse(length(colMed)>1, colMed[1+(i-1)%%length(colMed)], colMed), , bg = ifelse(length(colMed2)>1, colMed2[1+(i-1)%%length(colMed2)], colMed2), cex = cex, lwd = lwd, lty = lty)
           }
         }
       }
     }
     panel.last
     if (ann) {
-        title(main = main, sub = sub, xlab = xlab, ylab = ylab, line = line, outer = outer, xpd = xpd, cex.main = cex.main, col.main = col.main, font.main = font.main)
+      title(main = main, sub = sub, xlab = xlab, ylab = ylab, line = line, outer = outer, xpd = xpd, cex.main = cex.main, col.main = col.main, font.main = font.main)
     }
     invisible(list(upper = upper, lower = lower, median = med,
                    q1 = q1, q3 = q3))
   }
-

@@ -37,6 +37,16 @@ title(xlab = "Species", ylab = "Sepal Length")
 legend("topleft", fill = c("lightblue", "palevioletred"), legend = c("small", "large"), title = "Sepal Width")
 
 ## ---- fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last'----
+vioplot(Sepal.Length~Species, data=iris_large, col = "palevioletred", plotCentre = "line", side = "right", xlab = "Iris species", ylab = "Length", main = "Sepals", names=paste("Iris", levels(iris$Species)))
+vioplot(Sepal.Length~Species, data=iris_small, col = "lightblue", plotCentre = "line", side = "left", add = T)
+legend("topleft", fill = c("lightblue", "palevioletred"), legend = c("small", "large"), title = "Width")
+
+## ---- fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last'----
+vioplot(Sepal.Length~Species, data=iris_large, col = "palevioletred", plotCentre = "line", side = "right")
+vioplot(Sepal.Length~Species, data=iris_small, col = "lightblue", plotCentre = "line", side = "left", add = T, xlab = "Iris species", ylab = "Length", main = "Sepals", names=paste("Iris", levels(iris$Species)))
+legend("topleft", fill = c("lightblue", "palevioletred"), legend = c("small", "large"), title = "Width")
+
+## ---- fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last'----
 vioplot(Sepal.Length~Species, data=iris_large, col = "palevioletred", plotCentre = "point", side = "right", pchMed = 21, colMed = "palevioletred4", colMed2 = "palevioletred2")
 vioplot(Sepal.Length~Species, data=iris_small, col = "lightblue", plotCentre = "point", side = "left", pchMed = 21, colMed = "lightblue4", colMed2 = "lightblue2", add = T)
 title(xlab = "Species", ylab = "Sepal Length")

@@ -2,10 +2,24 @@
 % Please edit documentation in R/vioplot.R
 \name{vioplot}
 \alias{vioplot}
+\alias{violinplot}
+\alias{vioplot.matrix}
+\alias{violin.matrix}
+\alias{violinplot.matrix}
+\alias{vioplot.list}
+\alias{vioplot.data.frame}
 \alias{vioplot.formula}
 \alias{vioplot.default}
-\title{violin plot}
+\title{Violin Plot}
 \usage{
+\method{vioplot}{matrix}(x, use.cols = TRUE, ...)
+
+\method{vioplot}{list}(x, ...)
+
+\method{vioplot}{data.frame}(x, ...)
+
+\method{vioplot}{matrix}(x, use.cols = TRUE, ...)
+
 \method{vioplot}{formula}(
   formula,
   data = NULL,
@@ -15,6 +29,7 @@
   add = FALSE,
   ann = !add,
   horizontal = FALSE,
+  side = "both",
   xlab = mklab(y_var = horizontal),
   ylab = mklab(y_var = !horizontal),
   names = NULL,
@@ -29,6 +44,7 @@
   data = NULL,
   range = 1.5,
   h = NULL,
+  xlim = NULL,
   ylim = NULL,
   names = NULL,
   horizontal = FALSE,
@@ -136,9 +152,11 @@
 )
 }
 \arguments{
-\item{x}{for specifying data from which the boxplots are to be produced. Either a numeric vector, or a single list containing such vectors. Additional unnamed arguments specify further data as separate vectors (each corresponding to a component boxplot). NAs are allowed in the data.}
+\item{x}{a numeric matrix.}
 
-\item{...}{additional data vectors or formula parameters. For the formula method, named arguments to be passed to the default method.}
+\item{...}{Further arguments to \code{\link[vioplot]{vioplot}}.}
+
+\item{use.cols}{logical indicating if columns (by default) or rows (use.cols = FALSE) should be plotted.}
 
 \item{formula}{a formula, such as y ~ grp, where y is a numeric vector of data values to be split into groups according to the grouping variable grp (usually a factor).}
 
@@ -150,17 +168,19 @@
 
 \item{add}{logical. if FALSE (default) a new plot is created}
 
-\item{horizontal}{logical. horizontal or vertical violins}
+\item{horizontal}{logical. To use horizontal or vertical violins. Note that log scale can only be used on the x-axis for horizontal violins, and on the y-axis otherwise.}
+
+\item{side}{defaults to "both". Assigning "left" or "right" enables one sided plotting of violins. May be applied as a scalar across all groups.}
 
 \item{names}{one label, or a vector of labels for the data must match the number of data given}
 
-\item{drop, sep, lex.order}{defines groups to plot from formula, passed to  \code{\link[base]{split.default}}, see there.}
+\item{drop, sep, lex.order}{defines groups to plot from formula, passed to \code{split.default}, see there.}
 
 \item{range}{a factor to calculate the upper/lower adjacent values}
 
 \item{h}{the height for the density estimator, if omit as explained in sm.density, h will be set to an optimum}
 
-\item{ylim}{y limits}
+\item{xlim, ylim}{numeric vectors of length 2, giving the x and y coordinates ranges.}
 
 \item{col}{Graphical parameter for fill colour of the violin(s) polygon. NA for no fill colour. If col is a vector, it specifies the colour per violin, and colours are reused if necessary.}
 
@@ -184,11 +204,11 @@
 
 \item{areaEqual}{logical. Density plots checked for equal area if TRUE. wex must be scalar, relative widths of violins depend on area.}
 
-\item{axes, frame.plot, panel.first, panel.last, asp, line, outer, adj, ann, ask, bg, bty, cin, col.axis, col.lab, col.main, col.sub, cra, crt, csi, cxy, din, err, family, fg, fig, fin, font, font.axis, font.lab, font.main, font.sub, lab, las, lend, lheight, ljoin, lmitre, mai, mar, mex, mfcol, mfg, mfrow, mgp, mkh, new, oma, omd, omi, page, pch, pin, plt, ps, pty, smo, srt, tck, tcl, usr, xlog, xaxp, xaxs, xaxt, xpd, yaxp, yaxs, ylbias}{Arguments to be passed to methods, such as graphical parameters (see \code{\link[graphics]{par}})).}
+\item{axes, frame.plot, panel.first, panel.last, asp, line, outer, adj, ann, ask, bg, bty, cin, col.axis, col.lab, col.main, col.sub, cra, crt, csi, cxy, din, err, family, fg, fig, fin, font, font.axis, font.lab, font.main, font.sub, lab, las, lend, lheight, ljoin, lmitre, mai, mar, mex, mfcol, mfg, mfrow, mgp, mkh, new, oma, omd, omi, page, pch, pin, plt, ps, pty, smo, srt, tck, tcl, usr, xaxp, xaxs, xaxt, xpd, yaxp, yaxs, ylbias}{Arguments to be passed to methods, such as graphical parameters (see \code{\link[graphics]{par}})).}
 
 \item{main, sub, xlab, ylab}{graphical parameters passed to plot.}
 
-\item{ylog}{A logical value (see log in \code{\link[graphics]{plot.default}}). If TRUE, a logarithmic scale is in use (e.g., after plot(*, log = "y")). For a new device, it defaults to FALSE, i.e., linear scale.}
+\item{ylog, xlog}{A logical value (see log in \code{\link[graphics]{plot.default}}). If ylog is TRUE, a logarithmic scale is in use (e.g., after plot(*, log = "y")). For horizontal = TRUE then, if xlog is TRUE, a logarithmic scale is in use (e.g., after plot(*, log = "x")). For a new device, it defaults to FALSE, i.e., linear scale.}
 
 \item{cex}{A numerical value giving the amount by which plotting text should be magnified relative to the default.}
 
@@ -204,18 +224,18 @@
 
 \item{yaxt}{A character which specifies the y axis type. Specifying "n" suppresses plotting.}
 
-\item{log}{Logarithmic scale if log = "y" or TRUE. Invokes ylog = TRUE.}
+\item{log}{Logarithmic scale if log = "y" or TRUE. Invokes ylog = TRUE. If horizontal is TRUE then invokes xlog = TRUE.}
 
 \item{logLab}{Increments for labelling y-axis on log-scale, defaults to numbers starting with 1, 2, 5, and 10.}
 
 \item{na.rm}{logical value indicating whether NA values should be stripped before the computation proceeds. Defaults to TRUE.}
 
-\item{side}{defaults to "both". Assigning "left" or "right" enables one sided plotting of violins. May be applied as a scalar across all groups.}
-
 \item{plotCentre}{defaults to "points", plotting a central point at the median. If "line" is given a median line is plotted (subject to side) alternatively.}
 }
 \description{
 Produce violin plot(s) of the given (grouped) values with enhanced annotation and colour per group. Includes customisation of colours for each aspect of the violin, boxplot, and separate violins. This supports input of data as a list or formula, being backwards compatible with \code{\link[vioplot]{vioplot}} (0.2) and taking input in a formula as used for \code{\link[graphics]{boxplot}}.
+
+Interpreting the columns (or rows) of a matrix as different groups, draw a boxplot for each.
 }
 \examples{
 
