@@ -1,12 +1,12 @@
 ## -----------------------------------------------------------------------------
 library("vioplot")
 
-## ---- message=FALSE-----------------------------------------------------------
+## ----message=FALSE------------------------------------------------------------
 data(iris)
 boxplot(iris$Sepal.Length[iris$Species=="setosa"], iris$Sepal.Length[iris$Species=="versicolor"], iris$Sepal.Length[iris$Species=="virginica"], names=c("setosa", "versicolor", "virginica"))
 vioplot(iris$Sepal.Length[iris$Species=="setosa"], iris$Sepal.Length[iris$Species=="versicolor"], iris$Sepal.Length[iris$Species=="virginica"], names=c("setosa", "versicolor", "virginica"))
 
-## ---- echo=FALSE, message=FALSE-----------------------------------------------
+## ----echo=FALSE, message=FALSE------------------------------------------------
 par(mar=rep(1,4))
 
 ## -----------------------------------------------------------------------------
@@ -17,10 +17,10 @@ plot(density(iris$Sepal.Length[iris$Species=="versicolor"]), main="Sepal Length:
 plot(density(iris$Sepal.Length[iris$Species=="virginica"]), main="Sepal Length: virginica", col="palevioletred4")
 par(mfrow=c(1, 1))
 
-## ---- echo=FALSE, message=FALSE-----------------------------------------------
+## ----echo=FALSE, message=FALSE------------------------------------------------
 par(mar=c(5, 4, 4, 2) + 0.1)
 
-## ---- echo=FALSE, message=FALSE-----------------------------------------------
+## ----echo=FALSE, message=FALSE------------------------------------------------
 par(mar=rep(2,4))
 
 ## -----------------------------------------------------------------------------
@@ -33,7 +33,7 @@ plot(density(iris$Sepal.Length[iris$Species=="versicolor"]), main="Sepal Length:
 plot(density(iris$Sepal.Length[iris$Species=="virginica"]), main="Sepal Length: virginica", col="palevioletred4", xlim=xaxis, ylim=yaxis)
 par(mfrow=c(1, 1))
 
-## ---- echo=FALSE, message=FALSE-----------------------------------------------
+## ----echo=FALSE, message=FALSE------------------------------------------------
 par(mar=c(5, 4, 4, 2) + 0.1)
 
 ## -----------------------------------------------------------------------------
@@ -48,7 +48,7 @@ legend("topright", fill=c("green", "blue", "palevioletred4"), legend=levels(iris
 ## -----------------------------------------------------------------------------
 vioplot(iris$Sepal.Length[iris$Species=="setosa"], iris$Sepal.Length[iris$Species=="versicolor"], iris$Sepal.Length[iris$Species=="virginica"], names=c("setosa", "versicolor", "virginica"), main="Sepal Length", areaEqual = T)
 
-## ---- echo=FALSE, message=FALSE-----------------------------------------------
+## ----echo=FALSE, message=FALSE------------------------------------------------
 par(mar=rep(2, 4))
 
 ## -----------------------------------------------------------------------------
@@ -58,7 +58,7 @@ vioplot(iris$Sepal.Length[iris$Species=="setosa"], iris$Sepal.Length[iris$Specie
 vioplot(iris$Sepal.Length[iris$Species=="setosa"], iris$Sepal.Length[iris$Species=="versicolor"], iris$Sepal.Length[iris$Species=="virginica"], names=c("setosa", "versicolor", "virginica"), main="Sepal Length (Equal Area)", areaEqual = T)
 par(mfrow=c(1,1))
 
-## ---- echo=FALSE, message=FALSE-----------------------------------------------
+## ----echo=FALSE, message=FALSE------------------------------------------------
 par(mar=c(5, 4, 4, 2) + 0.1)
 
 ## -----------------------------------------------------------------------------
