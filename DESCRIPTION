@@ -1,7 +1,7 @@
 Package: vioplot
 Title: Violin Plot
-Version: 0.5.0
-Date: 2024-07-04
+Version: 0.5.1
+Date: 2025-02-24
 Authors@R: c(person("Daniel", "Adler", email = "dadler@uni-goettingen.de", role = c("aut", "cph")),
            person("S. Thomas", "Kelly", email = "tomkellygenetics@gmail.com", role = c("aut", "cre")),
            person("Tom M.", "Elliott", email = "tom.elliott@auckland.ac.nz", role = c("aut", "ctb")),
@@ -17,11 +17,11 @@ Language: en-GB
 VignetteBuilder: knitr
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2024-07-05 08:14:00 UTC; kellyt
+Packaged: 2025-02-23 20:25:10 UTC; kellyt
 Author: Daniel Adler [aut, cph],
   S. Thomas Kelly [aut, cre],
   Tom M. Elliott [aut, ctb],
   Jordan Adamson [aut, ctb]
 Maintainer: S. Thomas Kelly <tomkellygenetics@gmail.com>
 Repository: CRAN
-Date/Publication: 2024-07-05 08:40:02 UTC
+Date/Publication: 2025-02-23 23:40:02 UTC
